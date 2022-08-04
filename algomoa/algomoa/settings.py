@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from algomoa import my_settings
+import pymysql
+pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -80,7 +82,7 @@ WSGI_APPLICATION = 'algomoa.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = my_settings.DATABASES
+# DATABASES = my_settings.DATABASE
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',
@@ -88,6 +90,19 @@ DATABASES = my_settings.DATABASES
 #         'CLIENT':{'host' : '127.0.0.1:27017',}
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # engine: mysql
+        'NAME' : 'test', # DB Name
+        'USER' : 'admin', # DB User
+        'PASSWORD' : 'algomoa!', # Password
+        'HOST': 'exfx-user.cai20ccufxe1.ap-northeast-2.rds.amazonaws.com', # 생성한 데이터베이스 엔드포인트
+        'PORT': '3306', # 데이터베이스 포트
+        'OPTIONS':{
+            'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
+    }
+}
 
 
 # Password validation
