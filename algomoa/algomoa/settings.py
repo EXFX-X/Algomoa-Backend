@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'algomoa.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = my_settings.DATABASE
+DATABASES = my_settings.DATABASES
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',

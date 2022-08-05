@@ -1,5 +1,5 @@
 import os
-from urllib import response 
+from urllib import response
 import requests
 from xml.dom.minidom import Attr
 from django.http import JsonResponse
@@ -41,12 +41,12 @@ def kakao_Token_Test1(request):
 
     user_profile_response = requests.get(url=user_profile_url, headers=headers)
     print(user_profile_response.json())
-    
+
     user_profile = user_profile_response.json()
     email = user_profile.get("kakao_account").get("email")
     name = user_profile.get("properties").get("nickname")
     kakao_id = user_profile.get("id")
-    
+
 
     # DB 확인
     if not models.User.objects.filter(kakao_id = kakao_id).exists():
@@ -56,7 +56,7 @@ def kakao_Token_Test1(request):
             name = name,
             checked_social = True
         )
-        user.set_unusable_password()
+        # user.set_unusable_password()
         user.save()
 
     else:
@@ -64,15 +64,15 @@ def kakao_Token_Test1(request):
     return JsonResponse({'message':'test'}, status=401)
 
 '''
-# get 
+# get
 def kakao_Token_Test2(request):
     try:
         kakao_token = request.headers.get("Authorization")
-        
+
         if kakao_token == None:
             return JsonResponse({'message':'TOKEN FAIL'}, status=401)
-        
-    
+
+
     except AttributeError:
         return JsonResponse({'message':'FAIL'}, status=400)
-'''    
+'''
