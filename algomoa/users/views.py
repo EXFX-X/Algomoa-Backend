@@ -56,7 +56,7 @@ def kakao_Token_Test1(request):
             name = name,
             checked_social = True
         )
-        user.set_unusable_password()
+        # user.set_unusable_password()
         user.save()
 
     else:
