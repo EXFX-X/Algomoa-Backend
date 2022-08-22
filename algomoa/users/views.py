@@ -76,3 +76,6 @@ def kakao_Token_Test2(request):
     except AttributeError:
         return JsonResponse({'message':'FAIL'}, status=400)
 '''
+
+def google_login(request):
+    return render(request, 'google_login.html')
