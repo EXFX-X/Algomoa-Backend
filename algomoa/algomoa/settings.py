@@ -149,6 +149,12 @@ AUTHENTICATION_BACKENDS=(
 )
 
 SITE_ID = 1
+SOCIALACCOUNT_PROVIDERS={
+    'google':{
+    'SCOPE':['profile','email',],
+    'AUTH_PARAMS':{'access_type':'online'}
+    }
+}
 LOGIN_REDIRECT_URL = '/'
 REST_USE_JWT = True
 REST_FRAMEWORK = {

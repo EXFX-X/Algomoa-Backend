@@ -90,7 +90,8 @@ def kakao_Token_Test2(request):
 '''
 # 구글 로그인
 def google_login(request):
-    scope = "https://www.googleapis.com/auth/userinfo.email"
+    scope = "https://www.googleapis.com/auth/userinfo.email " + \
+                "https://www.googleapis.com/auth/userinfo.profile"
     client_id = my_settings.SOCIAL_AUTH_GOOGLE_CLIENT_ID
     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
@@ -113,23 +114,47 @@ def google_callback(request):
     ### 1-3. 성공 시 access_token 가져오기
     access_token = token_req_json.get('access_token')
 
-    user_info_response = requests.get(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
-        params={
-            'access_token': access_token
-        }
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    user_info_response = requests.get(url=
+        "https://www.googleapis.com/userinfo/v2/me",
+        # params={
+        #     'access_token': access_token
+        # },
+        headers=headers
     )
 
     print(user_info_response.json())
-    # print(access_token)
-    # email = user_profile.get("kakao_account").get("email")
-    # name = user_profile.get("properties").get("nickname")
-    # kakao_id = user_profile.get("id")
-    # {'sub': '100653528820403215784',
-    # 'picture': 'https://lh3.googleusercontent.com/a-/AFdZucroZ_wy8U_3_GTXqAEPRpkNmHkeLojf8cmt-CkHOg=s96-c',
+    user_profile = user_info_response.json()
+
+    email = user_profile.get("email")
+    name = user_profile.get("name")
+    google_id = user_profile.get("id")
+    # {'id': '100653528820403215784',
     # 'email': 'skm0626shinee@gmail.com',
-    # 'email_verified': True}
-    #
+    # 'verified_email': True,
+    # 'name': 'KM S',
+    # 'given_name': 'KM',
+    # 'family_name': 'S',
+    # 'picture': 'https://lh3.googleusercontent.com/a-/AFdZucroZ_wy8U_3_GTXqAEPRpkNmHkeLojf8cmt-CkHOg=s96-c',
+    # 'locale': 'ko'}
+    # DB 확인
+    if not User.objects.filter(user_id = google_id).exists():
+        user = User.objects.create(
+            user_id = google_id,
+            email = email,
+            name = name,
+            checked_social = True
+        )
+        # user.set_unusable_password()
+        user.save()
+
+    else:
+        return JsonResponse({'message':'already exist'}, status=400)
+    return JsonResponse({'message':'test'}, status=401)
+
     # if User.objects.filter(social_login_id = user['sub']).exists(): #기존에 가입했었는지 확인
     #         user_info           = User.objects.get(social_login_id=user['sub']) # 가입된 데이터를 변수에 저장
     #         encoded_jwt         = jwt.encode({'id': user["sub"]}, wef_key, algorithm='HS256') # jwt토큰 발행
